@@ -393,7 +393,7 @@ int yaf_loader_import(char *path, int len, int use_path TSRMLS_DC) {
 int yaf_internal_autoload(char *file_name, uint name_len, char **directory TSRMLS_DC) {
 	zval *library_dir, *global_dir;
 	char *q, *p, *seg;
-	uint seg_len, directory_len, status, drop_prefix = 0;
+	uint seg_len, directory_len, status, add_src_include = 0;
 	char *ext = YAF_G(ext);
 	smart_str buf = {0};
 
@@ -415,7 +415,7 @@ int yaf_internal_autoload(char *file_name, uint name_len, char **directory TSRML
 			if (yaf_loader_is_local_namespace(loader, file_name, name_len TSRMLS_CC)) {
 				library_path = Z_STRVAL_P(library_dir);
 				library_path_len = Z_STRLEN_P(library_dir);
-				drop_prefix = 1;
+				add_src_include = 1;
 			} else {
 				library_path = Z_STRVAL_P(global_dir);
 				library_path_len = Z_STRLEN_P(global_dir);
@@ -445,16 +445,16 @@ int yaf_internal_autoload(char *file_name, uint name_len, char **directory TSRML
 		while(++q && *q != '_' && *q != '\0');
 
 		if (*q != '\0') {
-			if (!drop_prefix) {
-				seg_len	= q - p;
-				seg	 	= estrndup(p, seg_len);
-				smart_str_appendl(&buf, seg, seg_len);
-				efree(seg);
-				smart_str_appendc(&buf, DEFAULT_SLASH);
-			} else {
-				drop_prefix = 0;
+			seg_len	= q - p;
+			seg	 	= estrndup(p, seg_len);
+			smart_str_appendl(&buf, seg, seg_len);
+			efree(seg);
+			smart_str_appendc(&buf, DEFAULT_SLASH);
+			p 		= q + 1;
+			if (add_src_include) {
+				smart_str_appendl(&buf, "src/include/", 12);
+				add_src_include = 0;
 			}
-			p = q + 1;
 		} else {
 			break;
 		}

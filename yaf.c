@@ -57,7 +57,7 @@ zend_function_entry yaf_functions[] = {
 /** {{{ PHP_INI_MH(OnUpdateSeparator)
  */
 PHP_INI_MH(OnUpdateSeparator) {
-	YAF_G(name_separator) = new_value; 
+	YAF_G(name_separator) = new_value;
 	YAF_G(name_separator_len) = new_value_length;
 	return SUCCESS;
 }
@@ -72,6 +72,8 @@ PHP_INI_BEGIN()
 	STD_PHP_INI_BOOLEAN("yaf.use_spl_autoload", "0", PHP_INI_ALL, OnUpdateBool, use_spl_autoload, zend_yaf_globals, yaf_globals)
 	STD_PHP_INI_ENTRY("yaf.forward_limit", 		"5", PHP_INI_ALL, OnUpdateLongGEZero, forward_limit, zend_yaf_globals, yaf_globals)
 	STD_PHP_INI_BOOLEAN("yaf.name_suffix", 		"1", PHP_INI_ALL, OnUpdateBool, name_suffix, zend_yaf_globals, yaf_globals)
+	STD_PHP_INI_BOOLEAN("yaf.wht_style_autoload", 		"1", PHP_INI_ALL, OnUpdateBool, wht_style_autoload, zend_yaf_globals, yaf_globals)
+	STD_PHP_INI_BOOLEAN("yaf.action_separate", 		"1", PHP_INI_ALL, OnUpdateBool, action_separate, zend_yaf_globals, yaf_globals)
 	PHP_INI_ENTRY("yaf.name_separator", 		"",  PHP_INI_ALL, OnUpdateSeparator)
 	STD_PHP_INI_BOOLEAN("yaf.cache_config",    	"0", PHP_INI_SYSTEM, OnUpdateBool, cache_config, zend_yaf_globals, yaf_globals)
 /* {{{ This only effects internally */
@@ -110,7 +112,7 @@ PHP_MINIT_FUNCTION(yaf)
 {
 	REGISTER_INI_ENTRIES();
 
-#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 5 
+#if PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 5
 	php_register_info_logo(YAF_LOGO_GUID, YAF_LOGO_MIME_TYPE, yaf_logo, sizeof(yaf_logo));
 #endif
 
@@ -256,6 +258,7 @@ PHP_MINFO_FUNCTION(yaf)
 
 	php_info_print_table_row(2, "Version", PHP_YAF_VERSION);
 	php_info_print_table_row(2, "Supports", YAF_SUPPORT_URL);
+	php_info_print_table_row(1, "Adapter for Wanhuatong.tv");
 	php_info_print_table_end();
 
 	DISPLAY_INI_ENTRIES();

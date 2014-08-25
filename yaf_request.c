@@ -652,6 +652,75 @@ PHP_METHOD(yaf_request, getParam) {
 }
 /* }}} */
 
+/** {{{ proto public Yaf_Request_Abstract::get(string $name, $mixed $default = NULL)
+*/
+PHP_METHOD(yaf_request, get) {
+	char *name;
+	uint len;
+	zval *def = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|z", &name, &len, &def) == FAILURE) {
+		return;
+	} else {
+		zval *value = yaf_request_get_param(getThis(), name, len TSRMLS_CC);
+		if (value) {
+			RETURN_ZVAL(value, 1, 0);
+		}
+		if (def) {
+			RETURN_ZVAL(def, 1, 0);
+		}
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/** {{{ proto public Yaf_Request_Abstract::post(string $name, $mixed $default = NULL)
+*/
+PHP_METHOD(yaf_request, post) {
+	char *name;
+	uint len;
+	zval *def = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|z", &name, &len, &def) == FAILURE) {
+		return;
+	} else {
+		zval *value = yaf_request_get_param(getThis(), name, len TSRMLS_CC);
+		if (value) {
+			RETURN_ZVAL(value, 1, 0);
+		}
+		if (def) {
+			RETURN_ZVAL(def, 1, 0);
+		}
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
+/** {{{ proto public Yaf_Request_Abstract::header(string $name, $mixed $default = NULL)
+*/
+PHP_METHOD(yaf_request, header) {
+	char *name;
+	uint len;
+	zval *def = NULL;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|z", &name, &len, &def) == FAILURE) {
+		return;
+	} else {
+		zval *value = yaf_request_get_param(getThis(), name, len TSRMLS_CC);
+		if (value) {
+			RETURN_ZVAL(value, 1, 0);
+		}
+		if (def) {
+			RETURN_ZVAL(def, 1, 0);
+		}
+	}
+
+	RETURN_NULL();
+}
+/* }}} */
+
 /** {{{ proto public Yaf_Request_Abstract::getException(void)
 */
 PHP_METHOD(yaf_request, getException) {
@@ -674,6 +743,22 @@ PHP_METHOD(yaf_request, getException) {
 /** {{{ proto public Yaf_Request_Abstract::getParams(void)
 */
 PHP_METHOD(yaf_request, getParams) {
+	zval *params = zend_read_property(yaf_request_ce, getThis(), ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_PARAMS), 1 TSRMLS_CC);
+	RETURN_ZVAL(params, 1, 0);
+}
+/* }}} */
+
+/** {{{ proto public Yaf_Request_Abstract::getx(void)
+*/
+PHP_METHOD(yaf_request, getx) {
+	zval *params = zend_read_property(yaf_request_ce, getThis(), ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_PARAMS), 1 TSRMLS_CC);
+	RETURN_ZVAL(params, 1, 0);
+}
+/* }}} */
+
+/** {{{ proto public Yaf_Request_Abstract::getx(void)
+*/
+PHP_METHOD(yaf_request, postx) {
 	zval *params = zend_read_property(yaf_request_ce, getThis(), ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_PARAMS), 1 TSRMLS_CC);
 	RETURN_ZVAL(params, 1, 0);
 }
@@ -793,6 +878,11 @@ zend_function_entry yaf_request_methods[] = {
 	PHP_ME(yaf_request, setParam, 		yaf_request_set_param_arginfo, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getParam, 		yaf_request_get_param_arginfo, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getParams, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, postx, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, getx, 		yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, get, 		yaf_request_getenv_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, post, 		yaf_request_getenv_arginfo, 		ZEND_ACC_PUBLIC)
+	PHP_ME(yaf_request, header, 		yaf_request_getenv_arginfo, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getException, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getModuleName, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request, getControllerName, 	yaf_request_void_arginfo, 		ZEND_ACC_PUBLIC)
