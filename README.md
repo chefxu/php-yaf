@@ -15,6 +15,7 @@ PHP framework written in c and built as a PHP extension.
 - 现有框架
 ab -n 10000 -c 200 http://192.168.1.18:7008/page
 
+```
 Server Software:        nginx/1.6.1
 Server Hostname:        192.168.1.18
 Server Port:            7008
@@ -33,10 +34,12 @@ Requests per second:    551.14 [#/sec] (mean)
 Time per request:       362.882 [ms] (mean)
 Time per request:       1.814 [ms] (mean, across all concurrent requests)
 Transfer rate:          4053.38 [Kbytes/sec] received
+```
 
 - 适配yaf
 ab -n 10000 -c 200 http://192.168.1.18:6000/page
 
+```
 Server Software:        nginx/1.6.1
 Server Hostname:        192.168.1.18
 Server Port:            6000
@@ -55,7 +58,7 @@ Requests per second:    1840.14 [#/sec] (mean)
 Time per request:       108.688 [ms] (mean)
 Time per request:       0.543 [ms] (mean, across all concurrent requests)
 Transfer rate:          8755.90 [Kbytes/sec] received
-
+```
 
 ## Requirement
 - PHP 5.2 +
