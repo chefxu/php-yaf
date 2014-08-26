@@ -41,7 +41,7 @@ extern zend_module_entry yaf_module_entry;
 #define YAF_G(v) (yaf_globals.v)
 #endif
 
-#define PHP_YAF_VERSION 					"2.3.3-dev"
+#define PHP_YAF_VERSION 					"2.3.3-vbox"
 
 #define YAF_STARTUP_FUNCTION(module)   	ZEND_MINIT_FUNCTION(yaf_##module)
 #define YAF_RINIT_FUNCTION(module)		ZEND_RINIT_FUNCTION(yaf_##module)
@@ -102,8 +102,8 @@ ZEND_BEGIN_MODULE_GLOBALS(yaf)
 	zend_bool 	cache_config;
 	zend_bool   action_prefer;
 	zend_bool	name_suffix;
-	zend_bool   action_separate;
-	zend_bool   wht_style_autoload;
+	zend_bool   vbox_mvc;
+	zend_bool   vbox_autoload;
 	zend_bool  	autoload_started;
 	zend_bool  	running;
 	zend_bool  	in_exception;

@@ -638,7 +638,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 			is_def_ctr = 1;
 		} */
 
-		if (YAF_G(wht_style_autoload)) {
+		if (YAF_G(vbox_mvc)) {
 			zval *act;
 			act = zend_read_property(request_ce, request, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_ACTION), 1 TSRMLS_CC);
 			ce = yaf_dispatcher_get_controller_for_wanhuatong(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller),
@@ -740,7 +740,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 					return 1;
 				}
 				zval_ptr_dtor(&ret);
-			} else if (YAF_G(wht_style_autoload)) {
+			} else if (YAF_G(vbox_mvc)) {
 				yaf_trigger_error(YAF_ERR_NOTFOUND_ACTION TSRMLS_CC, "Action function can not find %s", func_name);
 				efree(func_name);
 				zval_ptr_dtor(&icontroller);

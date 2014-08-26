@@ -73,7 +73,7 @@ PHP_METHOD(ce, get##x) { \
 	RETURN_ZVAL(ret, 1, 1); \
 }
 
-#define YAF_WHT_REQUEST_X_METHOD(ce, m, type) \
+#define YAF_REQUEST_VBOX_METHOD(ce, m, type) \
 PHP_METHOD(ce, m) { \
 	array_init(return_value); \
 	zval ***args; \

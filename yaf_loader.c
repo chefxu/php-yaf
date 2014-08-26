@@ -415,7 +415,9 @@ int yaf_internal_autoload(char *file_name, uint name_len, char **directory TSRML
 			if (yaf_loader_is_local_namespace(loader, file_name, name_len TSRMLS_CC)) {
 				library_path = Z_STRVAL_P(library_dir);
 				library_path_len = Z_STRLEN_P(library_dir);
-				add_src_include = 1;
+				if (YAF_G(vbox_autoload)) {
+					add_src_include = 1;
+				}
 			} else {
 				library_path = Z_STRVAL_P(global_dir);
 				library_path_len = Z_STRLEN_P(global_dir);

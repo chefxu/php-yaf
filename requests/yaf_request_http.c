@@ -300,37 +300,37 @@ PHP_METHOD(yaf_request_http, header) {
 
 /** {{{ proto public Yaf_Request_Abstract::getx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, getx, YAF_GLOBAL_VARS_GET);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, getx, YAF_GLOBAL_VARS_GET);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::postx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, postx, YAF_GLOBAL_VARS_POST);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, postx, YAF_GLOBAL_VARS_POST);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::cookiex(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, cookiex, YAF_GLOBAL_VARS_COOKIE);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, cookiex, YAF_GLOBAL_VARS_COOKIE);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::serverx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, serverx, YAF_GLOBAL_VARS_SERVER);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, serverx, YAF_GLOBAL_VARS_SERVER);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::headerx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, headerx, YAF_GLOBAL_VARS_POST);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, headerx, YAF_GLOBAL_VARS_POST);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::envx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, envx, YAF_GLOBAL_VARS_ENV);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, envx, YAF_GLOBAL_VARS_ENV);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Abstract::envx(void)
 */
-YAF_WHTX_METHOD(yaf_request_http, filex, YAF_GLOBAL_VARS_FILES);
+YAF_REQUEST_VBOX_METHOD(yaf_request_http, filex, YAF_GLOBAL_VARS_FILES);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Http::__construct(string $request_uri, string $base_uri)
