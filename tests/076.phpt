@@ -4,7 +4,6 @@ Check for Yaf_Route_Supervar::assemble
 <?php if (!extension_loaded("yaf")) print "skip"; ?>
 --INI--
 yaf.throw_exception=1
-yaf.use_namespace=0
 --FILE--
 <?php
 

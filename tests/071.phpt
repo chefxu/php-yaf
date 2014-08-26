@@ -3,7 +3,6 @@ return type in Yaf_Simple_Config::valid() should be boolean
 --SKIPIF--
 <?php if (!extension_loaded("yaf")) print "skip"; ?>
 --INI--
-yaf.use_namespace=0
 --FILE--
 <?php
 
