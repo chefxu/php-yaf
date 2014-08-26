@@ -6,10 +6,10 @@ PHP framework written in c and built as a PHP extension.
 ## 这是什么？
 这个项目的目的是适配yaf框架与现有框架，在尽量不修改现有程序的基础上，享受yaf的高性能。
 考虑到现有框架与yaf之间存在较大差异，主要适配点为：
-- MVC目录结构差异很大，特别是Action是单文件形式， 无Controller结构， 与yaf加载的目录结构差异很大。
-- autoload加载机制不一致， 虽然yaf可以通过配置关闭内置的autoload而使用自定义的spl autoload， 但是会损失性能。
-- request，response方法适配， yaf提供的方法较少， 需要实现诸如request->get, request->getx等方法。
-- 现有框架的Config性能损失很大，可以学习yaf的方式， 将配置缓存到进程内存中， 检查文件时间戳来更新，能减少不少文件io，提高效率， 最理想的方式是将现有的配置类Config适配到yaf中。
+- MVC目录结构差异很大，特别是Action是单文件形式， 无Controller结构， 与yaf加载的目录结构差异很大。(已完成)
+- autoload加载机制不一致， 虽然yaf可以通过配置关闭内置的autoload而使用自定义的spl autoload， 但是会损失性能。（已完成）
+- request，response方法适配， yaf提供的方法较少， 需要实现诸如request->get, request->getx等方法。（request完成）
+- 现有框架的Config性能损失很大，可以学习yaf的方式， 将配置缓存到进程内存中， 检查文件时间戳来更新，能减少不少文件io，提高效率。
 
 ## 测试对比
 - 现有框架
@@ -37,7 +37,7 @@ Transfer rate:          4053.38 [Kbytes/sec] received
 ```
 
 - 适配yaf
-ab -n 10000 -c 200 http://192.168.1.18:6000/page
+ab -n 10000 -c 200 http://192.168.1.18:8000/page
 
 ```
 Server Software:        nginx/1.6.1
