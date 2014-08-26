@@ -640,7 +640,6 @@ PHP_METHOD(yaf_request, getParam) {
 		return;
 	} else {
 		zval *value = yaf_request_get_param(getThis(), name, len TSRMLS_CC);
-		php_printf("fetch %s value\n", name);
 		if (value) {
 			RETURN_ZVAL(value, 1, 0);
 		}

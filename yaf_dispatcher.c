@@ -360,73 +360,6 @@ zend_class_entry * yaf_dispatcher_get_controller(char *app_dir, char *module, ch
 }
 /* }}} */
 
-/** {{{ zend_class_entry * yaf_dispatcher_get_controller_for_wanhuatong(char *app_dir, char *module,
- * 			char *controller, int len, char *action, int alen, int def_module TSRMLS_DC)
- */
-zend_class_entry * yaf_dispatcher_get_controller_for_wanhuatong(char *app_dir, char *module, char *controller,
-		int len, char *action, int alen, int def_module TSRMLS_DC) {
-	char 	 *directory 	= NULL;
-	int	 directory_len 	= 0;
-
-	if (def_module) {
-		yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "non-module is not support in wanhuatong style mode");
-		directory_len = spprintf(&directory, 0, "%s%c%s", app_dir, DEFAULT_SLASH, YAF_CONTROLLER_DIRECTORY_NAME);
-	} else {
-		directory_len = spprintf(&directory, 0, "%s%c%s%c%s%c%s", app_dir, DEFAULT_SLASH, YAF_CONTROLLER_DIRECTORY_NAME,
-				DEFAULT_SLASH, module, DEFAULT_SLASH, controller);
-	}
-
-	if (directory_len) {
-		char *class 		= NULL;
-		char *class_lowercase 	= NULL;
-		int class_len		= 0;
-		zend_class_entry **ce 	= NULL;
-		char *action_upper = NULL;
-		int action_upper_len = 0;
-
-		action_upper_len = spprintf(&action_upper, 0, "%s%s", action, "Action");
-		*(action_upper) = toupper(*action_upper);
-		class_len = spprintf(&class, 0, "%s%s%c%s%c%s", "TV_Controller_", module, '_', controller, '_', action_upper);
-		class_lowercase = zend_str_tolower_dup(class, class_len);
-
-		if (zend_hash_find(EG(class_table), class_lowercase, class_len + 1, (void **)&ce) != SUCCESS) {
-
-			if (!yaf_internal_autoload(action_upper, action_upper_len, &directory TSRMLS_CC)) {
-				yaf_trigger_error(YAF_ERR_NOTFOUND_CONTROLLER TSRMLS_CC, "Failed opening controller script %s: %s", directory, strerror(errno));
-				efree(class);
-				efree(class_lowercase);
-				efree(directory);
-				efree(action_upper);
-				return NULL;
-			} else if (zend_hash_find(EG(class_table), class_lowercase, class_len + 1, (void **) &ce) != SUCCESS)  {
-				yaf_trigger_error(YAF_ERR_AUTOLOAD_FAILED TSRMLS_CC, "Could not find class %s in controller script %s", class, directory);
-				efree(class);
-				efree(class_lowercase);
-				efree(directory);
-				efree(action_upper);
-				return 0;
-			} else if (!instanceof_function(*ce, yaf_controller_ce TSRMLS_CC)) {
-				yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "Controller must be an instance of %s", yaf_controller_ce->name);
-				efree(class);
-				efree(class_lowercase);
-				efree(directory);
-				efree(action_upper);
-				return 0;
-			}
-		}
-
-		efree(class);
-		efree(class_lowercase);
-		efree(directory);
-		efree(action_upper);
-
-		return *ce;
-	}
-
-	return NULL;
-}
-/* }}} */
-
 /** {{{ zend_class_entry * yaf_dispatcher_get_action(char *app_dir, yaf_controller_t *controller, char *module, int def_module, char *action, int len TSRMLS_DC)
  */
 zend_class_entry * yaf_dispatcher_get_action(char *app_dir, yaf_controller_t *controller, char *module, int def_module, char *action, int len TSRMLS_DC) {
@@ -638,15 +571,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 			is_def_ctr = 1;
 		} */
 
-		if (YAF_G(wht_style_autoload)) {
-			zval *act;
-			act = zend_read_property(request_ce, request, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_ACTION), 1 TSRMLS_CC);
-			ce = yaf_dispatcher_get_controller_for_wanhuatong(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller),
-					Z_STRLEN_P(controller), Z_STRVAL_P(act), Z_STRLEN_P(act), is_def_module TSRMLS_CC);
-		} else {
-			ce = yaf_dispatcher_get_controller(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller), Z_STRLEN_P(controller), is_def_module TSRMLS_CC);
-		}
-
+		ce = yaf_dispatcher_get_controller(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller), Z_STRLEN_P(controller), is_def_module TSRMLS_CC);
 		if (!ce) {
 			return 0;
 		} else {
@@ -677,12 +602,12 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 				zval_ptr_dtor(&icontroller);
 				return 0;
 			}
-
+		
 			/* view template directory for application, please notice that view engine's directory has high priority */
 			if (is_def_module) {
-				spprintf(&view_dir, 0, "%s%c%s", app_dir, DEFAULT_SLASH, YAF_VIEW_DIRECTORY_NAME);
+				spprintf(&view_dir, 0, "%s%c%s", app_dir, DEFAULT_SLASH, "views");
 			} else {
-				spprintf(&view_dir, 0, "%s%c%s%c%s", app_dir, DEFAULT_SLASH, YAF_VIEW_DIRECTORY_NAME, DEFAULT_SLASH, Z_STRVAL_P(module));
+				spprintf(&view_dir, 0, "%s%c%s%c%s%c%s", app_dir, DEFAULT_SLASH, "modules", DEFAULT_SLASH, Z_STRVAL_P(module), DEFAULT_SLASH, "views");
 			}
 
 			if (YAF_G(view_directory)) {
@@ -698,7 +623,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 			/* because the action might call the forward to override the old action */
 			Z_ADDREF_P(action);
 
-			func_name_len = spprintf(&func_name,  0, YAF_ACTION_EXECUTOR_NAME);
+			func_name_len = spprintf(&func_name,  0, "%s%s", action_lower, "action");
 			efree(action_lower);
 
 			if (zend_hash_find(&((ce)->function_table), func_name, func_name_len + 1, (void **)&fptr) == SUCCESS) {
@@ -740,11 +665,6 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 					return 1;
 				}
 				zval_ptr_dtor(&ret);
-			} else if (YAF_G(wht_style_autoload)) {
-				yaf_trigger_error(YAF_ERR_NOTFOUND_ACTION TSRMLS_CC, "Action function can not find %s", func_name);
-				efree(func_name);
-				zval_ptr_dtor(&icontroller);
-				return 0;
 			} else if ((ce = yaf_dispatcher_get_action(app_dir, icontroller,
 							Z_STRVAL_P(module), is_def_module, Z_STRVAL_P(action), Z_STRLEN_P(action) TSRMLS_CC))
 					&& (zend_hash_find(&(ce)->function_table, YAF_ACTION_EXECUTOR_NAME,
@@ -830,7 +750,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 
 						if (Z_TYPE_P(ret) == IS_STRING && Z_STRLEN_P(ret)) {
 							yaf_response_alter_body(response, NULL, 0, Z_STRVAL_P(ret), Z_STRLEN_P(ret), YAF_RESPONSE_APPEND  TSRMLS_CC);
-						}
+						} 
 
 						zval_ptr_dtor(&ret);
 					} else {
@@ -890,7 +810,7 @@ void yaf_dispatcher_exception_handler(yaf_dispatcher_t *dispatcher, yaf_request_
 	exception = EG(exception);
 	EG(exception) = NULL;
 	opline = EG(opline_before_exception);
-#if ZEND_DEBUG
+#if ZEND_DEBUG 
 	EG(opline_before_exception) = NULL;
 #endif
 
@@ -917,8 +837,8 @@ void yaf_dispatcher_exception_handler(yaf_dispatcher_t *dispatcher, yaf_request_
 	}
 
 	if (!yaf_dispatcher_handle(dispatcher, request, response, view TSRMLS_CC)) {
-		if (EG(exception)
-				&& instanceof_function(Z_OBJCE_P(EG(exception)),
+		if (EG(exception) 
+				&& instanceof_function(Z_OBJCE_P(EG(exception)), 
 					yaf_buildin_exceptions[YAF_EXCEPTION_OFFSET(YAF_ERR_NOTFOUND_CONTROLLER)] TSRMLS_CC)) {
 			zval *m = zend_read_property(yaf_dispatcher_ce, dispatcher, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_MODULE), 1 TSRMLS_CC);
 			/* failover to default module error catcher */
@@ -1138,7 +1058,7 @@ PHP_METHOD(yaf_dispatcher, flushInstantly) {
 		zend_update_property_bool(yaf_dispatcher_ce, self, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_FLUSH), (instantly_flush)? 1:0 TSRMLS_CC);
 		RETURN_ZVAL(self, 1, 0);
 	} else {
-		RETURN_BOOL(Z_BVAL_P(zend_read_property(yaf_dispatcher_ce, self, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_FLUSH), 1 TSRMLS_CC)));
+		RETURN_BOOL(Z_BVAL_P(zend_read_property(yaf_dispatcher_ce, self, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_FLUSH), 1 TSRMLS_CC)));		
 	}
 }
 /* }}} */
@@ -1269,7 +1189,7 @@ PHP_METHOD(yaf_dispatcher, catchException) {
 		return;
 	}
 
-	if (ZEND_NUM_ARGS()) {
+	if (ZEND_NUM_ARGS()) { 
 		YAF_G(catch_exception) = flag? 1: 0;
 		RETURN_ZVAL(getThis(), 1, 0);
 	} else {
@@ -1293,7 +1213,7 @@ PHP_METHOD(yaf_dispatcher, autoRender) {
 		RETURN_ZVAL(self, 1, 0);
 	} else {
 		RETURN_BOOL(Z_BVAL_P(zend_read_property(yaf_dispatcher_ce, self, ZEND_STRL(YAF_DISPATCHER_PROPERTY_NAME_RENDER), 1 TSRMLS_CC)));
-	}
+	} 
 }
 /* }}} */
 

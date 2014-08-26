@@ -184,16 +184,6 @@ YAF_REQUEST_METHOD(yaf_request_http, Request, YAF_GLOBAL_VARS_REQUEST);
 YAF_REQUEST_METHOD(yaf_request_http, Files, 	YAF_GLOBAL_VARS_FILES);
 /* }}} */
 
-/** {{{ proto public Yaf_Request_Http::getEnv(mixed $name, mixed $default = NULL)
-*/
-YAF_REQUEST_METHOD(yaf_request_http, Env, 	YAF_GLOBAL_VARS_ENV);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Http::getServer(mixed $name, mixed $default = NULL)
-*/
-YAF_REQUEST_METHOD(yaf_request_http, Server, 	YAF_GLOBAL_VARS_SERVER);
-/* }}} */
-
 /** {{{ proto public Yaf_Request_Http::getCookie(mixed $name, mixed $default = NULL)
 */
 YAF_REQUEST_METHOD(yaf_request_http, Cookie, 	YAF_GLOBAL_VARS_COOKIE);
@@ -232,8 +222,8 @@ PHP_METHOD(yaf_request_http, get) {
 			zval **ppzval	= NULL;
 
 			YAF_GLOBAL_VARS_TYPE methods[4] = {
-				YAF_GLOBAL_VARS_GET,
 				YAF_GLOBAL_VARS_POST,
+				YAF_GLOBAL_VARS_GET,
 				YAF_GLOBAL_VARS_COOKIE,
 				YAF_GLOBAL_VARS_SERVER
 			};
@@ -257,80 +247,6 @@ PHP_METHOD(yaf_request_http, get) {
 	}
 	RETURN_NULL();
 }
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::header(string $name, $mixed $default = NULL)
-*/
-PHP_METHOD(yaf_request_http, header) {
-	char *name;
-	uint len;
-	zval *def = NULL;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s|z", &name, &len, &def) == FAILURE) {
-		return;
-	} else {
-		zval **value = NULL;
-		zval *params = NULL;
-		char *key = NULL;
-		uint key_len = 0;
-		int i = 0;
-		key_len = spprintf(&key, 0, "HTTP_%s", name);
-		while(i < key_len && key[i] != '\0') {
-			*(key+i) = toupper(*(key+i));
-			if (*(key+i) == '-') *(key+i) = '_';
-			i++;
-		}
-
-		params = PG(http_globals)[YAF_GLOBAL_VARS_SERVER];
-		if (params && Z_TYPE_P(params) == IS_ARRAY) {
-			if (zend_hash_find(Z_ARRVAL_P(params), key, key_len + 1, (void **)&value) == SUCCESS ){
-				RETURN_ZVAL(*value, 1, 0);
-			}
-		}
-		efree(key);
-
-		if (def) {
-			RETURN_ZVAL(def, 1, 0);
-		}
-	}
-
-	RETURN_NULL();
-}
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::getx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, getx, YAF_GLOBAL_VARS_GET);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::postx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, postx, YAF_GLOBAL_VARS_POST);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::cookiex(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, cookiex, YAF_GLOBAL_VARS_COOKIE);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::serverx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, serverx, YAF_GLOBAL_VARS_SERVER);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::headerx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, headerx, YAF_GLOBAL_VARS_POST);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::envx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, envx, YAF_GLOBAL_VARS_ENV);
-/* }}} */
-
-/** {{{ proto public Yaf_Request_Abstract::envx(void)
-*/
-YAF_WHTX_METHOD(yaf_request_http, filex, YAF_GLOBAL_VARS_FILES);
 /* }}} */
 
 /** {{{ proto public Yaf_Request_Http::__construct(string $request_uri, string $base_uri)
@@ -369,20 +285,6 @@ zend_function_entry yaf_request_http_methods[] = {
 	PHP_ME(yaf_request_http, isXmlHttpRequest, 	NULL, ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, __construct,		NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(yaf_request_http, __clone,		NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CLONE)
-
-	/* {{{ add method for wanhuatong */
-	PHP_ME(yaf_request_http, postx, 		NULL, 		ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, getx, 		NULL, 		ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, serverx,	NULL, 		ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, cookiex,	NULL, 		ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, envx, 		NULL, 		ZEND_ACC_PUBLIC)
-	PHP_ME(yaf_request_http, header, 	NULL, 	ZEND_ACC_PUBLIC)
-	PHP_MALIAS(yaf_request_http,   post,     	getPost,	NULL, 	ZEND_ACC_PUBLIC)
-	PHP_MALIAS(yaf_request_http,   cookie,      getCookie,	NULL, 	ZEND_ACC_PUBLIC)
-	PHP_MALIAS(yaf_request_http,   file,        getFiles,	NULL, 	ZEND_ACC_PUBLIC)
-	PHP_MALIAS(yaf_request_http,   server,      getServer,	NULL, 	ZEND_ACC_PUBLIC)
-	PHP_MALIAS(yaf_request_http,   env,         getEnv,		NULL, 	ZEND_ACC_PUBLIC)
-	/* }}} */
 	{NULL, NULL, NULL}
 };
 /* }}} */
