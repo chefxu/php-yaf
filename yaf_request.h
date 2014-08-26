@@ -73,6 +73,32 @@ PHP_METHOD(ce, get##x) { \
 	RETURN_ZVAL(ret, 1, 1); \
 }
 
+#define YAF_WHT_REQUEST_X_METHOD(ce, m, type) \
+PHP_METHOD(ce, m) { \
+	array_init(return_value); \
+	zval ***args; \
+	int argc; \
+	int	i; \
+	argc = ZEND_NUM_ARGS(); \
+	if (argc == 0) { \
+		zend_hash_copy(Z_ARRVAL_P(return_value), Z_ARRVAL_P(PG(http_globals)[type]), (copy_ctor_func_t) zval_add_ref, NULL, sizeof(zval *)); \
+	} else { \
+		if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "+", &args, &argc) == FAILURE) { \
+			return; \
+		} \
+		zval *arr = PG(http_globals)[type]; \
+		zval **temp; \
+		for (i = 0; i < argc; i++) { \
+			if ((Z_TYPE_PP(args[i]) == IS_STRING || Z_TYPE_PP(args[i]) == IS_LONG) \
+					&& (0 == zend_hash_find(HASH_OF(arr), Z_STRVAL_PP(args[i]), Z_STRLEN_PP(args[i])+1, (void **)&temp))) { \
+				Z_ADDREF_PP(temp); \
+				add_assoc_zval_ex(return_value, Z_STRVAL_PP(args[i]), Z_STRLEN_PP(args[i])+1, *temp); \
+			} \
+		} \
+		efree(args); \
+	} \
+}
+
 extern zend_class_entry * yaf_request_ce;
 
 zval * yaf_request_query(uint type, char * name, uint len TSRMLS_DC);
