@@ -11,6 +11,10 @@ PHP framework written in c and built as a PHP extension.
 - request，response方法适配， yaf提供的方法较少， 需要实现诸如request->get, request->getx等方法。（request完成）
 - 现有框架的Config性能损失很大，可以学习yaf的方式， 将配置缓存到进程内存中， 检查文件时间戳来更新，能减少不少文件io，提高效率。
 
+## 新增配置项
+- vbox_mvc 是否启用vbox框架风格的MVC结构， 默认1
+- vbox_autoload 是否启用vbox框架风格的自动加载，默认1
+
 ## 测试对比
 - 现有框架
 ab -n 10000 -c 200 http://192.168.1.18:7008/page

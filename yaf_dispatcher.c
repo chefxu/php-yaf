@@ -360,16 +360,16 @@ zend_class_entry * yaf_dispatcher_get_controller(char *app_dir, char *module, ch
 }
 /* }}} */
 
-/** {{{ zend_class_entry * yaf_dispatcher_get_controller_for_wanhuatong(char *app_dir, char *module,
+/** {{{ zend_class_entry * yaf_dispatcher_get_controller_for_vbox(char *app_dir, char *module,
  * 			char *controller, int len, char *action, int alen, int def_module TSRMLS_DC)
  */
-zend_class_entry * yaf_dispatcher_get_controller_for_wanhuatong(char *app_dir, char *module, char *controller,
+zend_class_entry * yaf_dispatcher_get_controller_for_vbox(char *app_dir, char *module, char *controller,
 		int len, char *action, int alen, int def_module TSRMLS_DC) {
 	char 	 *directory 	= NULL;
 	int	 directory_len 	= 0;
 
 	if (def_module) {
-		yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "non-module is not support in wanhuatong style mode");
+		yaf_trigger_error(YAF_ERR_TYPE_ERROR TSRMLS_CC, "non-module is not support in vbox style mode");
 		directory_len = spprintf(&directory, 0, "%s%c%s", app_dir, DEFAULT_SLASH, YAF_CONTROLLER_DIRECTORY_NAME);
 	} else {
 		directory_len = spprintf(&directory, 0, "%s%c%s%c%s%c%s", app_dir, DEFAULT_SLASH, YAF_CONTROLLER_DIRECTORY_NAME,
@@ -641,7 +641,7 @@ int yaf_dispatcher_handle(yaf_dispatcher_t *dispatcher, yaf_request_t *request, 
 		if (YAF_G(vbox_mvc)) {
 			zval *act;
 			act = zend_read_property(request_ce, request, ZEND_STRL(YAF_REQUEST_PROPERTY_NAME_ACTION), 1 TSRMLS_CC);
-			ce = yaf_dispatcher_get_controller_for_wanhuatong(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller),
+			ce = yaf_dispatcher_get_controller_for_vbox(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller),
 					Z_STRLEN_P(controller), Z_STRVAL_P(act), Z_STRLEN_P(act), is_def_module TSRMLS_CC);
 		} else {
 			ce = yaf_dispatcher_get_controller(app_dir, Z_STRVAL_P(module), Z_STRVAL_P(controller), Z_STRLEN_P(controller), is_def_module TSRMLS_CC);

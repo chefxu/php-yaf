@@ -370,7 +370,7 @@ zend_function_entry yaf_request_http_methods[] = {
 	PHP_ME(yaf_request_http, __construct,		NULL, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(yaf_request_http, __clone,		NULL, ZEND_ACC_PRIVATE | ZEND_ACC_CLONE)
 
-	/* {{{ add method for wanhuatong */
+	/* {{{ add method for vbox */
 	PHP_ME(yaf_request_http, postx, 		NULL, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, getx, 		NULL, 		ZEND_ACC_PUBLIC)
 	PHP_ME(yaf_request_http, serverx,	NULL, 		ZEND_ACC_PUBLIC)
